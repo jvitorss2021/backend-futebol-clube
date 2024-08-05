@@ -1,14 +1,21 @@
-# Usar a imagem node:16.14-alpine como base
+# Use a Node.js base image
+FROM node:16.14
 
-# Mudar para o diretório de trabalho /app-backend
+# Set the working directory inside the container
+WORKDIR /app-backend
 
-# Copiar os package.json e package-lock.json para o container
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Instalar as dependências Node
+# Install dependencies
+RUN npm install
 
-# Copiar o restante dos arquivos da aplicação para o container
+# Copy the rest of the application code to the working directory
+COPY . .
 
-# Sinalize que aplicação expõe a porta 3001
+# Expose the port your application will be running on
+EXPOSE 3001
 
-# Configurar os comandos para iniciar a aplicação de acordo com as boas práticas
-# Dica: Leia a seção Docker e Docker-compose no README para mais informações
+# Start the application
+ENTRYPOINT ["npm", "run"]
+CMD ["DEV"]
