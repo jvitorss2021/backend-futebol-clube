@@ -1,16 +1,37 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import { app } from '../app';
 // @ts-ignore
-import chaihttp from 'chai-http';
-chai.use(chaihttp);
+import chaiHttp = require('chai-http');
+
+import SequelizeTeam from '../database/models/team'
+import { teamsMock } from './mocks/team.mock';
+import { app } from '../app';
+
+chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('GET /teams', () => {
-  it('should return all teams', async () => {
-    const res = await chai.request(app).get('/teams');
-    expect(res.status).to.equal(200);
-    expect(res.body).to.be.an('array');
+describe('Teams Integration', function () {
+
+  it('should return all teams', async function () {
+    sinon.stub(SequelizeTeam, 'findAll').resolves(teamsMock as any);
+
+    const { status, body } = await chai.request(app).get('/teams');
+
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal(teamsMock);
   });
+  it('should return a team by id', async function () {
+    const teamId = 1;
+    sinon.stub(SequelizeTeam, 'findByPk').resolves(teamsMock[0] as any);
+
+    const { status, body } = await chai.request(app).get(`/teams/${teamId}`);
+
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal(teamsMock[0]);
+  });
+
+  afterEach(
+    sinon.restore
+  )
 });
