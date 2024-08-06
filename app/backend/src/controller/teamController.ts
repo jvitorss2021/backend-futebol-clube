@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import Team from '../database/models/team';
+import TeamService from '../service/TeamService';
 
-const getAllTeams = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const teams = await Team.findAll();
-    return res.status(200).json(teams);
-  } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' });
+class TeamController {
+  private teamService = new TeamService();
+
+  public async getAllTeams(_req: Request, res: Response) {
+    const serviceResponse = await this.teamService.getAllTeams();
+    res.status(200).json(serviceResponse);
   }
-};
-export default getAllTeams;
+}
+
+export default new TeamController();
