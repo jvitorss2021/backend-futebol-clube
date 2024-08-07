@@ -18,3 +18,4 @@ EXPOSE 3001
 
 # Start the application
 ENTRYPOINT ["npm", "run"]
+CMD ["dev"]
