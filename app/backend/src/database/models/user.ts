@@ -36,8 +36,8 @@ SequelizeUser.init({
   },
 }, {
   sequelize: db,
-  modelName: 'Team',
-  tableName: 'teams',
+  modelName: 'Users',
+  tableName: 'users',
   timestamps: false,
 });
 
