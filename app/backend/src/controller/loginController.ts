@@ -9,4 +9,5 @@ const login = async (req: Request, res: Response): Promise<Response | undefined>
     return res.status(401).json({ message: 'Invalid email or password' });
   }
 };
+
 export default login;
