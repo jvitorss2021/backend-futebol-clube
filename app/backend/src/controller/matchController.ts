@@ -39,5 +39,28 @@ class MatchController {
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
+
+  public static async updateMatch(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    try {
+      const match = await SequelizeMatches.findByPk(id);
+
+      if (!match) {
+        return res.status(404).json({ message: 'Match not found' });
+      }
+
+      if (!match.inProgress) {
+        return res.status(400).json({ message: 'Cannot update a finished match' });
+      }
+
+      await match.update({ homeTeamGoals, awayTeamGoals });
+
+      return res.status(200).json({ message: 'Match updated successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
 }
 export default MatchController;
