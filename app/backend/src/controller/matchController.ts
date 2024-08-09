@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import MatchService from '../service/matchService';
 import SequelizeMatches from '../database/models/matches';
+import SequelizeTeam from '../database/models/team';
 
 const InternalServerError = 'Internal Server Error';
 
@@ -65,8 +66,37 @@ class MatchController {
     }
   }
 
-  static async createMatch(req: Request, res: Response): Promise<Response> {
+  private static async validateTeams(homeTeamId: number, awayTeamId: number): Promise<{
+    message: string } | null> {
+    if (homeTeamId === awayTeamId) {
+      return { message: 'It is not possible to create a match with two equal teams' };
+    }
+
+    const homeTeam = await SequelizeTeam.findByPk(homeTeamId);
+    const awayTeam = await SequelizeTeam.findByPk(awayTeamId);
+
+    if (!homeTeam || !awayTeam) {
+      return { message: 'There is no team with such id!' };
+    }
+
+    return null;
+  }
+
+  private static getStatusCode(message: string): number {
+    if (message === 'It is not possible to create a match with two equal teams') {
+      return 422;
+    }
+    return 404;
+  }
+
+  public static async createMatch(req: Request, res: Response): Promise<Response> {
     const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+    const validationError = await MatchController.validateTeams(homeTeamId, awayTeamId);
+    if (validationError) {
+      const statusCode = MatchController.getStatusCode(validationError.message);
+      return res.status(statusCode).json(validationError);
+    }
 
     try {
       const match = await SequelizeMatches.create({
