@@ -11,6 +11,7 @@ const INITIAL_LEADERBOARD = {
   totalLosses: 0,
   goalsFavor: 0,
   goalsOwn: 0,
+  goalsBalance: 0,
 };
 
 class LeaderboardService {
@@ -19,9 +20,11 @@ class LeaderboardService {
     const newLeaderboard = leaderboard.map((board: ILeaderbord) => {
       const totalPoints = board.totalVictories * 3 + board.totalDraws;
       const goalsBalance = board.goalsFavor - board.goalsOwn;
-      const efficiency = board.totalGames > 0
-        ? (((totalPoints / (board.totalGames * 3)) * 100))
+      const efficiency = board.totalGames > 0 ? (((totalPoints / (board.totalGames * 3)) * 100))
         : 0;
+      // console.log('totalPoints:', totalPoints);
+      // console.log('totalGames:', board.totalGames);
+      // console.log('efficiency:', efficiency);
       return {
         ...board,
         totalPoints,
@@ -31,6 +34,23 @@ class LeaderboardService {
     });
     return newLeaderboard;
   };
+
+  private sortLeaderboard =
+  (leaderboard: ILeaderbord[] | undefined) => leaderboard?.sort((a, b) => {
+    if (b.totalPoints !== a.totalPoints) {
+      return b.totalPoints - a.totalPoints;
+    }
+    if (b.totalVictories !== a.totalVictories) {
+      return b.totalVictories - a.totalVictories;
+    }
+    if (b.goalsBalance !== a.goalsBalance) {
+      return b.goalsBalance - a.goalsBalance;
+    }
+    if (b.goalsFavor !== a.goalsFavor) {
+      return b.goalsFavor - a.goalsFavor;
+    }
+    return b.goalsOwn - a.goalsOwn;
+  });
 
   public getLeaderboard = async () => {
     const teams = await this.teamService.getAllTeams();
@@ -50,7 +70,7 @@ class LeaderboardService {
       }, { ...INITIAL_LEADERBOARD });
       return result;
     });
-    return this.calculateStatsLeaderboard(leaderboard);
+    return this.sortLeaderboard(this.calculateStatsLeaderboard(leaderboard));
   };
 }
 

@@ -7,7 +7,7 @@ interface ILeaderbord {
   totalLosses: number;
   goalsFavor: number;
   goalsOwn: number;
-  goalsBalance?: number;
+  goalsBalance: number;
   efficiency?: string;
 }
 
