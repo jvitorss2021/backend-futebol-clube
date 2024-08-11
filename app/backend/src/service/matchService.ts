@@ -3,7 +3,7 @@ import SequelizeMatches from '../database/models/matches';
 import SequelizeTeam from '../database/models/team';
 
 class MatchService {
-  private matchModel = SequelizeMatches;
+  public matchModel = SequelizeMatches;
 
   public async getAllMatches(): Promise<IMatches[]> {
     const matches = await this.matchModel.findAll({
