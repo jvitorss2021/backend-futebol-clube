@@ -16,20 +16,23 @@ const INITIAL_LEADERBOARD = {
 
 class LeaderboardService {
   public teamService = new TeamService();
+  private calculateEfficiency = (totalPoints: number, totalGames: number): number => (totalGames > 0
+    ? parseFloat(((totalPoints / (totalGames * 3)) * 100).toFixed(2))
+    : 0);
+
   private calculateStatsLeaderboard = (leaderboard: ILeaderbord[]) => {
     const newLeaderboard = leaderboard.map((board: ILeaderbord) => {
       const totalPoints = board.totalVictories * 3 + board.totalDraws;
       const goalsBalance = board.goalsFavor - board.goalsOwn;
-      const efficiency = board.totalGames > 0 ? (((totalPoints / (board.totalGames * 3)) * 100))
-        : 0;
+      const efficiency = this.calculateEfficiency(totalPoints, board.totalGames);
       // console.log('totalPoints:', totalPoints);
       // console.log('totalGames:', board.totalGames);
-      // console.log('efficiency:', efficiency);
+      console.log('efficiency:', efficiency);
       return {
         ...board,
         totalPoints,
         goalsBalance,
-        efficiency: `${efficiency.toFixed(2)}%`,
+        efficiency: `${efficiency.toFixed(2)}`,
       };
     });
     return newLeaderboard;
