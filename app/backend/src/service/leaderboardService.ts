@@ -27,7 +27,7 @@ class LeaderboardService {
       const efficiency = this.calculateEfficiency(totalPoints, board.totalGames);
       // console.log('totalPoints:', totalPoints);
       // console.log('totalGames:', board.totalGames);
-      console.log('efficiency:', efficiency);
+      // console.log('efficiency:', efficiency);
       return {
         ...board,
         totalPoints,
@@ -55,7 +55,7 @@ class LeaderboardService {
     return b.goalsOwn - a.goalsOwn;
   });
 
-  public getLeaderboard = async () => {
+  public getHomeLeaderboard = async () => {
     const teams = await this.teamService.getAllTeams();
     const matches = await MatchService.getMatches(false);
     const leaderboard = teams.map((team) => {
@@ -68,6 +68,27 @@ class LeaderboardService {
           acc.totalLosses += match.homeTeamGoals < match.awayTeamGoals ? 1 : 0;
           acc.goalsFavor += match.homeTeamGoals;
           acc.goalsOwn += match.awayTeamGoals;
+        }
+        return acc;
+      }, { ...INITIAL_LEADERBOARD });
+      return result;
+    });
+    return this.sortLeaderboard(this.calculateStatsLeaderboard(leaderboard));
+  };
+
+  public getAwayLeaderboard = async () => {
+    const teams = await this.teamService.getAllTeams();
+    const matches = await MatchService.getMatches(false);
+    const leaderboard = teams.map((team) => {
+      const result = matches.reduce((acc, match) => {
+        if (match.awayTeamId === team.id) {
+          acc.name = team.teamName;
+          acc.totalGames += 1;
+          acc.totalVictories += match.awayTeamGoals > match.homeTeamGoals ? 1 : 0;
+          acc.totalDraws += match.awayTeamGoals === match.homeTeamGoals ? 1 : 0;
+          acc.totalLosses += match.awayTeamGoals < match.homeTeamGoals ? 1 : 0;
+          acc.goalsFavor += match.awayTeamGoals;
+          acc.goalsOwn += match.homeTeamGoals;
         }
         return acc;
       }, { ...INITIAL_LEADERBOARD });
