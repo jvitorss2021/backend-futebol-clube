@@ -21,7 +21,7 @@ describe('LeaderboardService and LeaderboardController', function () {
       sinon.stub(TeamService.prototype, 'getAllTeams').resolves(teamsMock);
       sinon.stub(MatchService, 'getMatches').resolves(matchesMock);
 
-      const result = await LeaderboardService.getLeaderboard();
+      const result = await LeaderboardService.getHomeLeaderboard();
 
       expect(result).to.deep.equal(leaderboardMock);
     });
@@ -30,7 +30,7 @@ describe('LeaderboardService and LeaderboardController', function () {
       const getAllTeamsStub = sinon.stub(TeamService.prototype, 'getAllTeams').resolves(teamsMock);
       const getMatchesStub = sinon.stub(MatchService, 'getMatches').resolves(matchesMock);
 
-      await LeaderboardService.getLeaderboard();
+      await LeaderboardService.getHomeLeaderboard();
 
       sinon.assert.calledOnce(getAllTeamsStub);
       sinon.assert.calledOnce(getMatchesStub);   

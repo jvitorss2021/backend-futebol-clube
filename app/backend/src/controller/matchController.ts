@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import MatchService from '../service/matchService';
 import SequelizeMatches from '../database/models/matches';
 import SequelizeTeam from '../database/models/team';
-
-const InternalServerError = 'Internal Server Error';
+import InternalServerError from '../middlewares/serverMiddleware';
 
 class MatchController {
   static getAllMatches = async (req: Request, res: Response) => {

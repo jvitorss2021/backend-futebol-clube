@@ -28,7 +28,7 @@ export const leaderboardMock = [
     goalsFavor: 3,
     goalsOwn: 1,
     goalsBalance: 2,
-    efficiency: '100.00%',
+    efficiency: '100.00',
   },
   {
     name: 'Team B',
@@ -40,6 +40,6 @@ export const leaderboardMock = [
     goalsFavor: 2,
     goalsOwn: 2,
     goalsBalance: 0,
-    efficiency: '33.33%',
+    efficiency: '33.33',
   },
 ];
